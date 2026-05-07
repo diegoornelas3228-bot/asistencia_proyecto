@@ -71,5 +71,25 @@ def calcular_rendimiento_db(usuario_id):
     except:
         return 0, 0
 
+
+def obtener_estadisticas_globales():
+    try:
+        conn = conectar()
+        cursor = conn.cursor()
+        # Esta consulta cuenta las asistencias de cada usuario
+        cursor.execute('''
+            SELECT u.username, COUNT(a.id) 
+            FROM usuarios u
+            LEFT JOIN asistencias a ON u.id = a.usuario_id
+            GROUP BY u.id
+        ''')
+        datos = cursor.fetchall()
+        conn.close()
+        return datos
+    except Exception as e:
+        print(f"Error en estadísticas: {e}")
+        return []
+
+
 if __name__ == "__main__":
     inicializar_db()
